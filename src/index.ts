@@ -28,9 +28,13 @@ app.use(
 
 io.on("connection", (socket) => {
   console.log("A user connected");
+
+  socket.on("message-sent", (message) => {
+    io.emit("message-received", message);
+  });
 });
 
-io.on("disconnect", (socket) => {
+io.on("disconnect", () => {
   console.log("A user disconnected");
 });
 
