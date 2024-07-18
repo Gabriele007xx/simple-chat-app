@@ -1,0 +1,21 @@
+{
+  "name": "socket",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc --noEmit && tsc --outDir build",
+    "dev": "node build/index.js",
+    "start": "nodemon"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "nodemon": "^3.1.4",
+    "typescript": "^5.5.3"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "express": "^4.19.2"
+  }
+}
