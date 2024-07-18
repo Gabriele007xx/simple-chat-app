@@ -1,0 +1,12 @@
+### MESSAGES
+
+GET http://localhost:3000/api/messages
+
+### POST MESSAGE
+
+POST http://localhost:3000/api/messages
+Content-Type: application/json
+
+{
+    "content" : "Hello World" 
+}
