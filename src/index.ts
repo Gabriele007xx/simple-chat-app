@@ -4,6 +4,7 @@ import { createClient } from "@vercel/postgres";
 import { config } from "dotenv";
 import { Server, Socket } from "socket.io";
 import { createServer } from "http";
+import cors from "cors";
 
 // #endregion
 
@@ -16,7 +17,13 @@ const io = new Server(server);
 
 const client = createClient({ connectionString: process.env.DATABASE_URL });
 
-app.use(express.json());
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 // #endregion
 
 io.on("connection", (socket) => {
