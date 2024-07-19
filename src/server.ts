@@ -92,7 +92,7 @@ app.post("/api/rooms/:idRoom/messages", (req: Request, res: Response) => {
   const { content, username } = req.body;
   const { idRoom } = req.params;
   client.query(
-    `INSERT INTO messages (content, username) VALUES ($1,$2, $3)`,
+    `INSERT INTO messages (content, username, idRoom) VALUES ($1,$2, $3)`,
     [content, username, idRoom],
     (error) => {
       if (error) res.status(500).json({ error });
