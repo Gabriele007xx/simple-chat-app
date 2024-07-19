@@ -32,8 +32,8 @@ client.connect();
 io.on("connection", (socket) => {
   socket.on("message-sent", ({content, username, idRoom}) => {
     client.query(
-      `INSERT INTO messages (content,username, idRoom) VALUES ($1, $2) RETURNING *`,
-      [content, username],
+      `INSERT INTO messages (content,username, idRoom) VALUES ($1, $2, $3) RETURNING *`,
+      [content, username, idRoom],
       (error, res) => {
         if (!error) io.emit("message-received", res.rows[0]);
       }
