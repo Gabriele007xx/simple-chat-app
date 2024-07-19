@@ -5,6 +5,7 @@ import { config } from "dotenv";
 import { Server, Socket } from "socket.io";
 import { createServer } from "http";
 import cors from "cors";
+import path from "path";
 
 // #endregion
 
@@ -17,32 +18,51 @@ const io = new Server(server);
 
 const client = createClient({ connectionString: process.env.DATABASE_URL });
 
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
+// #endregion
+
+client.connect();
+
+// #region :::SOCKETS:::
+io.on("connection", (socket) => {
+  socket.on("message-sent", (message) => {
+    client.query(
+      `INSERT INTO messages (content) VALUES ($1)`,
+      [message],
+      (error) => {
+        if (!error) io.emit("message-received", message);
+      }
+    );
+  });
+  socket.on("disconnect", () => {
+    console.log("User disconnected");
+  });
+});
+// #endregion
+
+
 app.use(
   cors({
     origin: "*",
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allowedHeaders: ["Content-Type", "Authorization"],
-  })
+  }),
+  express.json()
 );
-// #endregion
 
-io.on("connection", (socket) => {
-  console.log("A user connected");
-
-  socket.on("message-sent", (message) => {
-    io.emit("message-received", message);
-  });
-});
-
-io.on("disconnect", () => {
-  console.log("A user disconnected");
-});
-
-client.connect();
+app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req: Request, res: Response) => {
-  res.send("Hello World!");
+  res.sendFile(path.join("Hello World!"));
 });
+
+
+
 
 app.get("/api/messages", (req: Request, res: Response) => {
   client.query("SELECT * FROM messages", (error, response) => {
@@ -63,10 +83,6 @@ app.post("/api/messages", (req: Request, res: Response) => {
   );
 });
 
-server.listen(3000, () => {
-  console.log(`Server running on http://localhost:3000`);
-});
-
-app.listen(8080, () => {
-  console.log(`Server running on http://localhost:8080`);
+server.listen(PORT, () => {
+  console.log(`Server API is running http://localhost:${PORT}`);
 });
