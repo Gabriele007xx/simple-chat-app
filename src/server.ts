@@ -61,7 +61,7 @@ app.get("/", (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-app.get("/api/:idRoom/messages", (req: Request, res: Response) => {
+app.get("/api/rooms/:idRoom/messages", (req: Request, res: Response) => {
   const { idRoom } = req.params;
   client.query("SELECT * FROM messages WHERE idRoom=$1", [idRoom], (error, response) => {
     if (error) res.status(500).json({ error });

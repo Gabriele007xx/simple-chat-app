@@ -1,10 +1,10 @@
 ### GET MESSAGES
 
-GET http://localhost:3000/api/1/messages
+GET http://localhost:3000/api/rooms/1/messages
 
 ### POST MESSAGE
 
-POST http://localhost:3000/api/1/messages
+POST http://localhost:3000/api/rooms/1/messages
 Content-Type: application/json
 
 {
