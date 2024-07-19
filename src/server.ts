@@ -14,7 +14,7 @@ config();
 
 const app = express();
 const server = createServer(app);
-const io = new Server(server);
+const PORT = process.env.PORT || 3000;
 
 const client = createClient({ connectionString: process.env.DATABASE_URL });
 
@@ -58,11 +58,8 @@ app.use(
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req: Request, res: Response) => {
-  res.sendFile(path.join("Hello World!"));
+  res.sendFile(path.join(__dirname, "index.html"));
 });
-
-
-
 
 app.get("/api/messages", (req: Request, res: Response) => {
   client.query("SELECT * FROM messages", (error, response) => {
