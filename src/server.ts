@@ -30,9 +30,9 @@ client.connect();
 
 // #region :::SOCKETS:::
 io.on("connection", (socket) => {
-  socket.on("message-sent", ({content, username}) => {
+  socket.on("message-sent", ({content, username, idRoom}) => {
     client.query(
-      `INSERT INTO messages (content,username) VALUES ($1, $2) RETURNING *`,
+      `INSERT INTO messages (content,username, idRoom) VALUES ($1, $2) RETURNING *`,
       [content, username],
       (error, res) => {
         if (!error) io.emit("message-received", res.rows[0]);
@@ -63,7 +63,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.get("/api/rooms/:idRoom/messages", (req: Request, res: Response) => {
   const { idRoom } = req.params;
-  client.query("SELECT * FROM messages WHERE idroom=$1", [Number(idRoom)], (error, response) => {
+  client.query("SELECT * FROM messages WHERE idRoom=$1", [Number(idRoom)], (error, response) => {
     if (error) res.status(500).json({ error });
     else res.status(200).json(response.rows);
   });
