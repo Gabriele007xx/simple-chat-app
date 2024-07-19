@@ -1,13 +1,26 @@
-### MESSAGES
+### GET MESSAGES
 
-GET http://localhost:3000/api/messages
+GET http://localhost:3000/api/1/messages
 
 ### POST MESSAGE
 
-POST http://localhost:3000/api/messages
+POST http://localhost:3000/api/1/messages
 Content-Type: application/json
 
 {
     "content" : "Hello World", 
     "username" : "Gabriele"
 }
+
+### POST ROOM
+
+POST http://localhost:3000/api/rooms
+Content-Type: application/json
+
+{
+    "name" : "Room"
+}
+
+### GET ROOMS
+
+GET http://localhost:3000/api/rooms

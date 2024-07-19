@@ -61,18 +61,39 @@ app.get("/", (req: Request, res: Response) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
-app.get("/api/messages", (req: Request, res: Response) => {
-  client.query("SELECT * FROM messages", (error, response) => {
+app.get("/api/:idRoom/messages", (req: Request, res: Response) => {
+  const { idRoom } = req.params;
+  client.query("SELECT * FROM messages WHERE idRoom=$1", [idRoom], (error, response) => {
     if (error) res.status(500).json({ error });
     else res.status(200).json(response.rows);
   });
 });
 
-app.post("/api/messages", (req: Request, res: Response) => {
-  const { content, username } = req.body;
+app.get("/api/rooms", (req: Request, res: Response) => {
+  client.query("SELECT * FROM rooms", (error, response) => {
+    if (error) res.status(500).json({ error });
+    else res.status(200).json(response.rows);
+  });
+});
+
+app.post("/api/rooms", (req: Request, res: Response) => {
+  const { name} = req.body;
   client.query(
-    `INSERT INTO messages (content, username) VALUES ($1,$2)`,
-    [content, username],
+    `INSERT INTO rooms (rooms) VALUES ($1) RETURNING *`,
+    [name],
+    (error, response) => {
+      if (error) res.status(500).json({ error });
+      else res.status(200).json(response.rows[0]);
+    }
+  );
+});
+
+app.post("/api/rooms/:idRoom/messages", (req: Request, res: Response) => {
+  const { content, username } = req.body;
+  const { idRoom } = req.params;
+  client.query(
+    `INSERT INTO messages (content, username) VALUES ($1,$2, $3)`,
+    [content, username, idRoom],
     (error) => {
       if (error) res.status(500).json({ error });
       else res.status(200).json({ message: "Message created successfully" });
