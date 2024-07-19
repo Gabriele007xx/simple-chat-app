@@ -30,12 +30,12 @@ client.connect();
 
 // #region :::SOCKETS:::
 io.on("connection", (socket) => {
-  socket.on("message-sent", (message) => {
+  socket.on("message-sent", ({content, username}) => {
     client.query(
-      `INSERT INTO messages (content) VALUES ($1)`,
-      [message],
-      (error) => {
-        if (!error) io.emit("message-received", message);
+      `INSERT INTO messages (content,username) VALUES ($1, $2) RETURNING *`,
+      [content, username],
+      (error, res) => {
+        if (!error) io.emit("message-received", res.rows[0]);
       }
     );
   });
@@ -69,10 +69,10 @@ app.get("/api/messages", (req: Request, res: Response) => {
 });
 
 app.post("/api/messages", (req: Request, res: Response) => {
-  const { content } = req.body;
+  const { content, username } = req.body;
   client.query(
-    `INSERT INTO messages (content) VALUES ($1)`,
-    [content],
+    `INSERT INTO messages (content, username) VALUES ($1,$2)`,
+    [content, username],
     (error) => {
       if (error) res.status(500).json({ error });
       else res.status(200).json({ message: "Message created successfully" });
