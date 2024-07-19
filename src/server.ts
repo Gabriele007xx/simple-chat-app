@@ -63,7 +63,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.get("/api/rooms/:idRoom/messages", (req: Request, res: Response) => {
   const { idRoom } = req.params;
-  client.query("SELECT * FROM messages WHERE idroom=$1", [idRoom], (error, response) => {
+  client.query("SELECT * FROM messages WHERE idroom=$1", [Number(idRoom)], (error, response) => {
     if (error) res.status(500).json({ error });
     else res.status(200).json(response.rows);
   });
